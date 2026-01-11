@@ -1,0 +1,7 @@
+{
+  "name": "潤敏肌膚智能管理助手 (Sensitive Skin Care AI)",
+  "description": "專為極度乾燥敏感肌設計的智能助手，提供專業膚況分析、庫存管理與成分審查功能。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
