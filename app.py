@@ -1,60 +1,116 @@
 import streamlit as st
 import google.generativeai as genai
 from PIL import Image
-import requests # 用來抓天氣的工具
+import requests
 
 # ==========================================
-# 🌸 頁面設定與粉色主題 CSS
+# 🌸 頁面設定 & 櫻花主題 CSS
 # ==========================================
-st.set_page_config(page_title="潤敏肌專屬顧問", page_icon="🧖‍♀️", layout="wide")
+st.set_page_config(page_title="潤敏肌助手", page_icon="🌸", layout="mobile") # 改成 mobile 佈局比較像 App
 
-# 自訂 CSS (優化手機版面與頁籤)
+# 自訂 CSS (仿 AI Studio 設計風格)
 st.markdown("""
     <style>
-    .stApp { background-color: #FFF5F7; color: #5D4037; }
-    h1, h2, h3 { color: #D81B60 !important; font-family: 'Helvetica', sans-serif; }
-    .stButton>button { background-color: #F8BBD0; color: #880E4F; border-radius: 20px; border: none; font-weight: bold; }
-    .stButton>button:hover { background-color: #F48FB1; color: white; }
-    
-    /* 優化頁籤 (Tabs) 的樣式 */
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
-    .stTabs [data-baseweb="tab"] {
-        height: 50px; white-space: pre-wrap; background-color: #FFF0F5; border-radius: 10px 10px 0 0; gap: 1px; padding-top: 10px; padding-bottom: 10px; color: #880E4F;
+    /* 全站背景：極淡的櫻花粉白 */
+    .stApp {
+        background-color: #fffcfd;
+        color: #5a4b4e;
     }
-    .stTabs [aria-selected="true"] { background-color: #F8BBD0; color: #880E4F; font-weight: bold;}
+    
+    /* 標題與重點文字 */
+    h1, h2, h3 {
+        color: #db2777 !important; /* 深粉紅 */
+        font-family: 'Helvetica', sans-serif;
+        font-weight: 700;
+    }
+    
+    /* 調整 Tabs 頁籤樣式 */
+    .stTabs [data-baseweb="tab-list"] {
+        background-color: #fff0f5;
+        border-radius: 20px;
+        padding: 5px;
+        gap: 5px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        border-radius: 15px;
+        color: #db2777;
+        font-weight: bold;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    /* 氣象資訊卡片化 */
+    div[data-testid="stMetricValue"] {
+        font-size: 28px !important;
+        color: #db2777 !important;
+        font-weight: 900 !important;
+    }
+    div[data-testid="stMetricLabel"] {
+        font-size: 14px !important;
+        color: #9d8189 !important;
+    }
+    
+    /* 按鈕美化 */
+    .stButton>button {
+        background: linear-gradient(90deg, #f9a8d4 0%, #f472b6 100%);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        padding: 12px 0px;
+        width: 100%;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(244, 114, 182, 0.3);
+        transition: all 0.3s;
+    }
+    .stButton>button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(244, 114, 182, 0.4);
+    }
+
+    /* 上傳框美化 */
+    div[data-testid="stFileUploader"] {
+        border: 2px dashed #fbcfe8;
+        border-radius: 15px;
+        padding: 10px;
+        background-color: #fff;
+    }
+
+    /* 選項按鈕 (Radio) 改成卡片式 */
+    div[role="radiogroup"] {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 15px;
+        border: 1px solid #fce7f3;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🔑 API 金鑰設定
+# 🔑 API 設定
 # ==========================================
-GOOGLE_API_KEY = "AIzaSyB1Rg-qsGJRZxU23Ee_hvS9AZ7gVtqPQCQ" 
+GOOGLE_API_KEY = "AIzaSyB1Rg-qsGJRZxU23Ee_hvS9AZ7gVtqPQCQ"
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 # ==========================================
-# 🌤️ 自動抓取天氣函數 (台北大安區)
+# 🌤️ 天氣函數
 # ==========================================
 def get_weather_data():
     try:
-        # 台北市大安區座標 (Latitude: 25.03, Longitude: 121.54)
         url = "https://api.open-meteo.com/v1/forecast?latitude=25.03&longitude=121.54&current=temperature_2m,relative_humidity_2m,dew_point_2m&timezone=Asia%2FTaipei"
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
         data = response.json()
-        current = data['current']
-        return {
-            "temp": current['temperature_2m'],
-            "humidity": current['relative_humidity_2m'],
-            "dew": current['dew_point_2m']
-        }
+        return data['current']
     except:
-        return None # 如果抓取失敗，回傳空值讓使用者手填
+        return None
 
 # ==========================================
-# 📦 預設產品資料庫
+# 📦 產品資料庫 (維持原本設定)
 # ==========================================
 default_inventory = [
-    {"category": "清潔", "name": "Curél 潤浸保濕洗顏慕絲", "desc": "溫和潔顏，早晚皆可", "qty": 1},
+    {"category": "清潔", "name": "Curél 潤浸保濕洗顏慕絲", "desc": "溫和潔顏", "qty": 1},
     {"category": "化妝水", "name": "medicube 積雪草化妝水", "desc": "清爽鎮靜", "qty": 1},
     {"category": "化妝水", "name": "Curel 潤浸保濕化粧水 II", "desc": "基礎保濕", "qty": 1},
     {"category": "化妝水", "name": "Platinum Label 積雪草化妝水", "desc": "濕敷專用", "qty": 1},
@@ -81,126 +137,139 @@ default_inventory = [
     {"category": "乳霜", "name": "ヒルマイルド 乳液", "desc": "強效封閉/脫皮用", "qty": 1},
     {"category": "防曬", "name": "Curél 潤浸保濕防曬", "desc": "敏感期用", "qty": 1},
     {"category": "防曬", "name": "Biore 含水防曬", "desc": "日常清爽", "qty": 1},
-    {"category": "儀器", "name": "medicube AGE-R Booster Pro", "desc": "四合一美容儀", "qty": 1}
+    {"category": "儀器", "name": "medicube Booster Pro", "desc": "四合一美容儀", "qty": 1}
 ]
 
 if 'inventory' not in st.session_state:
     st.session_state.inventory = default_inventory
 
 # ==========================================
-# 🧠 AI 核心邏輯
+# 🧠 AI 邏輯
 # ==========================================
 def analyze_skin_routine(left_img, right_img, weather_data, user_status, custom_note):
-    inventory_text = ""
-    for item in st.session_state.inventory:
-        qty_info = f"(剩餘: {item['qty']})" if item['category'] == "面膜" else ""
-        inventory_text += f"- [{item['category']}] {item['name']} : {item['desc']} {qty_info}\n"
-
+    inventory_text = "\n".join([f"- {item['name']}" for item in st.session_state.inventory])
+    
     prompt = f"""
-    【角色】專業皮膚科醫師。使用者：乾燥敏感肌。
-    【環境】氣溫{weather_data['temp']}°C | 濕度{weather_data['humidity']}% | 露點{weather_data['dew']}°C
-    【狀態】{user_status['time']} | {user_status['shower']} | 生理期:{'是' if user_status['period'] else '否'}
-    【備註】{custom_note}
-    【庫存】\n{inventory_text}
-    【規則】
-    1. 紅色痘印必選Makiron，膿頭痘必選3M，黑疤必選喜能復。
-    2. 濕度高用Biore防曬/Curél凝露；乾燥/低露點用Curél防曬/Healmild。
-    3. 安排Medicube Booster Pro模式(橘/綠/紅/藍)。
-    4. 檢查面膜庫存，<2片標註(需補貨)。
-    請以粉嫩溫柔語氣輸出：今日膚況摘要、保養流程(含儀器)、重點提醒、購物清單。
+    角色：專業皮膚科醫師。使用者：乾燥敏感肌。
+    環境：氣溫{weather_data['temp']}°C | 濕度{weather_data['humidity']}% | 露點{weather_data['dew']}°C
+    狀態：{user_status['time']} | {user_status['shower']} | 生理期:{'是' if user_status['period'] else '否'}
+    備註：{custom_note}
+    庫存：{inventory_text}
+    
+    請以粉嫩溫柔語氣輸出保養流程(含儀器建議)。
+    重點：紅印用Makiron，痘痘用3M，疤痕用喜能復。面膜<2片提醒補貨。
     """
     content = [prompt]
     if left_img: content.append(left_img)
     if right_img: content.append(right_img)
-    content.append("請分析照片規劃保養。")
-
+    content.append("開始分析")
+    
     try:
         response = model.generate_content(content)
         return response.text
     except Exception as e:
-        return f"分析錯誤：{e}"
+        return f"分析錯誤: {e}"
 
 def check_ingredients(image):
     try:
-        response = model.generate_content(["你是成分專家。針對乾燥敏感肌(對酒精香精敏感)，分析成分表優缺點與是否推薦。", image])
+        response = model.generate_content(["分析成分表(乾燥敏感肌視角)，檢查酒精香精。", image])
         return response.text
     except:
-        return "無法辨識成分表。"
+        return "無法辨識"
 
 # ==========================================
-# 🖥️ 介面配置 (改用 Tabs 頁籤)
+# 📱 介面佈局
 # ==========================================
 
-st.title("🧖‍♀️ 潤敏肌專屬顧問")
+# 標題區
+st.markdown("<h1 style='text-align: center;'>🌸 潤敏肌助手</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #db2777; letter-spacing: 2px;'>SAKURA CARE ASSISTANT</p>", unsafe_allow_html=True)
 
-# 建立三個頁籤
-tab1, tab2, tab3 = st.tabs(["🔍 膚質分析", "📦 產品清單", "🧪 成分掃雷"])
+# 頁籤導航
+tab1, tab2, tab3 = st.tabs(["膚況分析", "產品清單", "成分掃雷"])
 
-# --- Tab 1: 膚質分析 ---
+# --- Tab 1: 膚況分析 (重頭戲) ---
 with tab1:
-    st.info("📍 已自動載入「台北市大安區」即時氣象")
+    # 1. 氣象橫幅 (大數字)
+    weather = get_weather_data()
+    t_val = weather['temperature_2m'] if weather else 20
+    h_val = weather['relative_humidity_2m'] if weather else 60
+    d_val = weather['dew_point_2m'] if weather else 15
     
-    # 自動抓取天氣
-    weather_auto = get_weather_data()
-    
-    # 如果抓到了就用自動的，沒抓到就用預設值
-    def_temp = weather_auto['temp'] if weather_auto else 20.0
-    def_hum = weather_auto['humidity'] if weather_auto else 60
-    def_dew = weather_auto['dew'] if weather_auto else 15.0
+    # 使用 container 包住氣象區，用 column 排列
+    with st.container(border=True):
+        st.markdown("**📍 台北市大安區 即時環境**")
+        wc1, wc2, wc3 = st.columns(3)
+        wc1.metric("🌡️ 氣溫", f"{t_val}°C")
+        wc2.metric("💧 濕度", f"{h_val}%")
+        wc3.metric("🌫️ 露點", f"{d_val}°C")
 
-    col1, col2, col3 = st.columns(3)
-    temp = col1.number_input("🌡️ 氣溫 (°C)", value=def_temp)
-    humidity = col2.number_input("💧 濕度 (%)", value=float(def_hum))
-    dew_point = col3.number_input("🌫️ 露點 (°C)", value=def_dew, help="露點越低越乾")
-
-    col_t1, col_t2 = st.columns(2)
-    time_option = col_t1.selectbox("🕒 時段", ["☀️ 早上", "🌙 晚上"])
-    period_status = col_t2.checkbox("🩸 正值生理期")
-    shower_option = st.radio("🚿 狀態", ["尚未洗臉/洗澡", "剛洗完臉 (已清潔)"], horizontal=True)
-    custom_note = st.text_input("📝 補充 (如：熬夜、擠粉刺)")
-
+    # 2. 照片上傳區 (左右臉)
+    st.markdown("### 📸 拍攝膚況")
     c1, c2 = st.columns(2)
-    left_file = c1.file_uploader("📸 左臉頰", type=["jpg", "png"])
-    right_file = c2.file_uploader("📸 右臉頰", type=["jpg", "png"])
+    with c1:
+        st.info("左臉")
+        left_file = st.file_uploader("上傳左臉", type=["jpg", "png"], label_visibility="collapsed", key="left")
+    with c2:
+        st.info("右臉")
+        right_file = st.file_uploader("上傳右臉", type=["jpg", "png"], label_visibility="collapsed", key="right")
 
-    if st.button("✨ 生成保養流程"):
+    # 3. 狀態按鈕區
+    st.markdown("### ⚙️ 環境與生理狀態")
+    
+    col_status1, col_status2 = st.columns(2)
+    with col_status1:
+        time_option = st.radio("時段", ["☀️ 早上", "🌙 晚上"], horizontal=True, label_visibility="collapsed")
+    with col_status2:
+        shower_option = st.radio("清潔", ["🛁 洗澡前", "🧖‍♀️ 洗澡後"], horizontal=True, label_visibility="collapsed")
+        
+    # 生理期與備註
+    p_col, n_col = st.columns([1, 2])
+    with p_col:
+        st.write("") # 空行排版用
+        st.write("")
+        period_status = st.checkbox("🩸 生理期")
+    with n_col:
+        custom_note = st.text_input("📝 其他 (如: 熬夜/擠粉刺)", placeholder="輸入補充事項...")
+
+    # 4. 開始分析按鈕
+    st.write("")
+    if st.button("✨ 開始 AI 膚況診斷"):
         if left_file and right_file:
-            with st.spinner("AI 正在觀察膚況與計算濕度..."):
-                w_data = {"temp": temp, "humidity": humidity, "dew": dew_point}
+            with st.spinner("🌸 AI 正在為您調配保養處方..."):
+                w_data = {"temp": t_val, "humidity": h_val, "dew": d_val}
                 u_status = {"time": time_option, "shower": shower_option, "period": period_status}
                 res = analyze_skin_routine(Image.open(left_file), Image.open(right_file), w_data, u_status, custom_note)
+                
+                # 結果顯示區
                 st.markdown("---")
                 st.markdown(res)
         else:
-            st.warning("請上傳兩張照片喔！")
+            st.warning("⚠️ 請記得上傳左右臉的照片喔！")
 
-# --- Tab 2: 產品清單 ---
+# --- Tab 2: 產品清單 (保持原樣，微調樣式) ---
 with tab2:
-    st.write("📦 管理妳的保養品")
-    with st.expander("➕ 新增產品"):
+    with st.expander("➕ 入庫新產品"):
         n_name = st.text_input("名稱")
         n_cat = st.selectbox("分類", ["清潔", "化妝水", "精華液", "藥膏", "面膜", "乳霜", "防曬", "儀器"])
-        n_qty = st.number_input("數量", value=1)
         if st.button("加入"):
-            st.session_state.inventory.append({"category": n_cat, "name": n_name, "desc": "自訂", "qty": n_qty})
-            st.success(f"已加入 {n_name}")
+            st.session_state.inventory.append({"category": n_cat, "name": n_name, "desc": "新入庫", "qty": 1})
             st.rerun()
 
     for item in st.session_state.inventory:
         with st.expander(f"{item['category']} | {item['name']}"):
-            st.write(f"備註: {item['desc']}")
+            st.caption(item['desc'])
             if item['category'] == "面膜":
-                q = st.number_input(f"剩餘片數 ({item['name']})", value=item['qty'])
-                item['qty'] = q
-                if q < 2: st.error("⚠️ 需補貨")
-            
-            if st.button("🗑️ 刪除", key=f"del_{item['name']}"):
+                item['qty'] = st.number_input(f"剩餘數量", value=item['qty'], key=item['name'])
+                if item['qty'] < 2: st.error("⚠️ 該補貨囉！")
+            if st.button("刪除", key=f"del_{item['name']}"):
                 st.session_state.inventory.remove(item)
                 st.rerun()
 
 # --- Tab 3: 成分掃雷 ---
 with tab3:
-    st.write("🧪 檢查成分是否含酒精/香精")
+    st.markdown("### 🛡️ 櫻花採購掃雷")
+    st.write("購買前拍一下，幫妳把關酒精與香精！")
     ing = st.file_uploader("上傳成分表", type=["jpg", "png"])
-    if ing and st.button("🔍 分析"):
+    if ing and st.button("🔍 開始掃雷"):
         st.markdown(check_ingredients(Image.open(ing)))
