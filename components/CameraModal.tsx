@@ -48,25 +48,29 @@ const CameraModal: React.FC<CameraModalProps> = ({ onCapture, onClose, title }) 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
-      <div className="bg-white rounded-3xl overflow-hidden w-full max-w-md flex flex-col">
-        <div className="p-4 flex justify-between items-center border-b border-pink-50">
-          <h3 className="font-bold text-lg text-pink-800">{title}</h3>
-          <button onClick={onClose} className="p-2 text-gray-500 hover:text-pink-500 transition-colors">✕</button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-pink-900/40 backdrop-blur-md p-6">
+      <div className="bg-white rounded-[2.5rem] overflow-hidden w-full max-w-md flex flex-col shadow-2xl border border-pink-50">
+        <div className="p-6 flex justify-between items-center border-b border-pink-50 bg-[#fffafa]">
+          <h3 className="font-black text-xl text-pink-600">{title}</h3>
+          <button onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full text-pink-300 hover:text-pink-500 hover:bg-pink-50 transition-all font-black">✕</button>
         </div>
-        <div className="relative aspect-[3/4] bg-black">
+        <div className="relative aspect-[3/4] bg-pink-50">
           <video 
             ref={videoRef} 
             autoPlay 
             playsInline 
             className="w-full h-full object-cover"
           />
+          {/* 櫻花裝飾遮罩框 */}
+          <div className="absolute inset-0 border-[2rem] border-white/10 pointer-events-none"></div>
         </div>
-        <div className="p-6 flex justify-center">
+        <div className="p-8 flex justify-center bg-[#fffafa]">
           <button 
             onClick={capture}
-            className="w-16 h-16 rounded-full border-4 border-pink-100 bg-pink-500 hover:bg-pink-600 active:scale-90 transition-all shadow-lg"
-          />
+            className="w-20 h-20 rounded-full border-[6px] border-white bg-pink-400 hover:bg-pink-500 active:scale-90 transition-all shadow-[0_0_25px_-5px_rgba(249,168,212,0.8)] flex items-center justify-center"
+          >
+            <div className="w-8 h-8 rounded-full border-2 border-white/50"></div>
+          </button>
         </div>
       </div>
     </div>

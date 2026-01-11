@@ -7,29 +7,68 @@
     <title>潤敏肌膚智能管理助手</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        /* 導入 jf open 粉圓體 (jf open HunInn) 與 備用圓體 */
+        @import url('https://cdn.jsdelivr.net/gh/justfont/open-huninn-font@1.1/font/jf-openhuninn.css');
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --sakura-bg: #fffcfd;
+            --sakura-light: #fff5f8;
+            --sakura-main: #f9a8d4;
+            --sakura-deep: #db2777;
+        }
+
         body {
-            font-family: 'Noto+Sans+TC', sans-serif;
-            background-color: #fff5f7; /* Light pink background */
+            /* 優先使用 jf open 粉圓體，並以系統圓體作為備用 */
+            font-family: 'jf-openhuninn', 'Quicksand', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background-color: #fff7f9;
+            color: #5a4b4e;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+
         .glass-morphism {
-            background: rgba(255, 245, 247, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 182, 193, 0.3);
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(249, 168, 212, 0.2);
         }
-        /* Custom scrollbar for better pink aesthetic */
+
+        /* 滾動條樣式優化 */
         ::-webkit-scrollbar {
             width: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #fff5f7;
+            background: #fff7f9;
         }
         ::-webkit-scrollbar-thumb {
-            background: #fbcfe8;
+            background: #fce7f3;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #f9a8d4;
+        }
+
+        /* 強調粉圓體的圓潤感 */
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        button, input, textarea {
+            font-family: inherit;
+        }
+
+        /* 讓標題與重要文字更顯粉圓體的特色 */
+        h1, h2, h3, .font-bold, .font-black {
+            letter-spacing: 0.02em;
+        }
+
+        .rounded-pill {
+            border-radius: 9999px !important;
+        }
+        
+        .shadow-sakura {
+            box-shadow: 0 10px 25px -5px rgba(249, 168, 212, 0.2);
         }
     </style>
 <script type="importmap">

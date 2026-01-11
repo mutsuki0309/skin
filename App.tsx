@@ -172,33 +172,36 @@ const App: React.FC = () => {
   const isExtremeDry = envData.dewPoint < 10 || userFactors.isHeatingOn;
 
   return (
-    <div className="min-h-screen pb-24 max-w-2xl mx-auto shadow-2xl bg-white flex flex-col relative">
-      <header className="p-6 bg-gradient-to-r from-pink-50 to-white border-b border-pink-100 sticky top-0 z-30">
+    <div className="min-h-screen pb-28 max-w-2xl mx-auto shadow-2xl bg-white flex flex-col relative overflow-x-hidden antialiased">
+      <header className="p-7 bg-gradient-to-b from-[#fffcfd] to-[#fff7f9] border-b border-pink-100 sticky top-0 z-30">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-pink-800 tracking-tight">潤敏肌管理助手</h1>
-            <p className="text-xs text-pink-500 font-medium tracking-wide">Dynamic Skincare AI Assistant</p>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-pink-100 rounded-2xl flex items-center justify-center text-xl">🌸</div>
+            <div>
+              <h1 className="text-2xl font-bold text-pink-500 tracking-tight leading-none">潤敏肌助手</h1>
+              <p className="text-[10px] text-pink-300 font-bold tracking-[0.2em] uppercase mt-1">Sakura Care Assistant</p>
+            </div>
           </div>
-          <div className="text-right bg-white/50 px-3 py-1 rounded-2xl border border-pink-100 shadow-sm">
-            <span className="text-[10px] block text-gray-400 uppercase font-bold tracking-widest">Taipei Now</span>
-            <span className="text-sm font-bold text-pink-700">
+          <div className="text-right bg-white/80 px-4 py-2 rounded-3xl border border-pink-100 shadow-sm backdrop-blur-md">
+            <span className="text-[9px] block text-pink-300 uppercase font-bold tracking-widest mb-0.5">即時環境</span>
+            <span className="text-sm font-bold text-pink-400">
               {envData.temperature.toFixed(1)}° / {envData.humidity.toFixed(0)}%
             </span>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 p-5 space-y-6">
+      <main className="flex-1 p-6 space-y-7">
         {isExtremeDry && (
-          <div className="p-4 bg-orange-50 border-l-4 border-orange-400 rounded-r-2xl shadow-sm animate-pulse flex items-start gap-4">
-            <div className="text-2xl mt-1">🌵</div>
+          <div className="p-5 bg-orange-50/70 border-l-4 border-orange-300 rounded-r-[2rem] shadow-sm flex items-start gap-4 animate-pulse">
+            <div className="text-2xl mt-1">🏜️</div>
             <div className="flex-1">
-              <h4 className="text-sm font-bold text-orange-800">極乾環境警告</h4>
-              <p className="text-xs text-orange-700 mt-1">環境極度乾燥，建議強化 Healmild 系列修復。</p>
+              <h4 className="text-sm font-bold text-orange-800">櫻花警報：極端乾燥</h4>
+              <p className="text-xs text-orange-600 mt-1 font-bold">露點低於預警，建議強化 Healmild 鎖水。</p>
             </div>
             <button 
               onClick={() => setUserFactors(p => ({...p, isHeatingOn: !p.isHeatingOn}))}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-sm ${userFactors.isHeatingOn ? 'bg-orange-600 text-white' : 'bg-white text-orange-600 border border-orange-600'}`}
+              className={`px-4 py-2 rounded-full text-[10px] font-bold transition-all shadow-sm ${userFactors.isHeatingOn ? 'bg-orange-400 text-white' : 'bg-white text-orange-400 border border-orange-200'}`}
             >
               暖氣: {userFactors.isHeatingOn ? 'ON' : 'OFF'}
             </button>
@@ -206,22 +209,24 @@ const App: React.FC = () => {
         )}
 
         {mode === AppMode.ANALYSIS && (
-          <div className="space-y-6">
+          <div className="space-y-7">
             {!analysisResult ? (
-              <div className="space-y-6">
-                <div className="bg-pink-50/30 border-2 border-dashed border-pink-200 rounded-3xl p-6">
-                  <h3 className="font-bold text-pink-800 mb-4 text-center">第一步：上傳臉頰照片</h3>
-                  <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-7">
+                <div className="bg-pink-50/40 border-2 border-dashed border-pink-100 rounded-[2.5rem] p-8 text-center">
+                  <h3 className="font-bold text-pink-500 mb-6 text-lg tracking-tight">第一步：膚況照片分析</h3>
+                  <div className="grid grid-cols-2 gap-6">
                     {['leftSkin', 'rightSkin'].map(slot => {
                       const img = slot === 'leftSkin' ? skinPhotos.left : skinPhotos.right;
                       return (
-                        <label key={slot} className="aspect-[3/4] rounded-2xl bg-white border border-pink-200 flex flex-col items-center justify-center cursor-pointer hover:bg-pink-50 transition-all overflow-hidden relative shadow-sm">
+                        <label key={slot} className="aspect-[3/4] rounded-[2rem] bg-white border border-pink-100 flex flex-col items-center justify-center cursor-pointer hover:bg-pink-50 transition-all overflow-hidden relative shadow-sm hover:shadow-md active:scale-95 group">
                           {img ? (
                             <img src={img} className="w-full h-full object-cover" />
                           ) : (
                             <>
-                              <span className="text-2xl opacity-60">📸</span>
-                              <span className="text-[10px] font-bold text-pink-400 mt-1 uppercase tracking-tighter">{slot === 'leftSkin' ? '左臉頰' : '右臉頰'}</span>
+                              <div className="w-14 h-14 rounded-full bg-pink-50 flex items-center justify-center mb-3 group-hover:bg-pink-100 transition-colors">
+                                <span className="text-3xl">🤳</span>
+                              </div>
+                              <span className="text-[11px] font-bold text-pink-300 uppercase tracking-widest">{slot === 'leftSkin' ? '左頰' : '右頰'}</span>
                             </>
                           )}
                           <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, slot)} />
@@ -230,80 +235,79 @@ const App: React.FC = () => {
                     })}
                   </div>
                   
-                  {/* Context Buttons */}
-                  <div className="mt-6 space-y-4">
-                    <p className="text-[10px] font-black text-pink-400 uppercase tracking-widest text-center">時段與洗臉狀態</p>
-                    <div className="flex gap-2 justify-center">
+                  <div className="mt-8 space-y-6">
+                    <p className="text-[10px] font-bold text-pink-200 uppercase tracking-[0.4em]">環境與生活參數</p>
+                    <div className="flex gap-4">
                       <button 
                         onClick={() => setTimeOfDay('Morning')}
-                        className={`flex-1 py-3 rounded-2xl text-xs font-bold border transition-all shadow-sm ${timeOfDay === 'Morning' ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-400 border-gray-100'}`}
-                      >☀️ 早上</button>
+                        className={`flex-1 py-4 rounded-[1.25rem] text-[13px] font-bold border transition-all shadow-sm ${timeOfDay === 'Morning' ? 'bg-pink-400 text-white border-pink-400' : 'bg-white text-pink-300 border-pink-50'}`}
+                      >☀️ 晨間保養</button>
                       <button 
                         onClick={() => setTimeOfDay('Evening')}
-                        className={`flex-1 py-3 rounded-2xl text-xs font-bold border transition-all shadow-sm ${timeOfDay === 'Evening' ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-400 border-gray-100'}`}
-                      >🌙 晚上</button>
+                        className={`flex-1 py-4 rounded-[1.25rem] text-[13px] font-bold border transition-all shadow-sm ${timeOfDay === 'Evening' ? 'bg-pink-400 text-white border-pink-400' : 'bg-white text-pink-300 border-pink-50'}`}
+                      >🌙 晚間修復</button>
                     </div>
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex gap-4">
                       <button 
                         onClick={() => setWashStatus('Before')}
-                        className={`flex-1 py-3 rounded-2xl text-xs font-bold border transition-all shadow-sm ${washStatus === 'Before' ? 'bg-pink-800 text-white border-pink-800' : 'bg-white text-gray-400 border-gray-100'}`}
+                        className={`flex-1 py-4 rounded-[1.25rem] text-[13px] font-bold border transition-all shadow-sm ${washStatus === 'Before' ? 'bg-pink-600 text-white border-pink-600' : 'bg-white text-pink-300 border-pink-50'}`}
                       >🧼 洗臉前</button>
                       <button 
                         onClick={() => setWashStatus('After')}
-                        className={`flex-1 py-3 rounded-2xl text-xs font-bold border transition-all shadow-sm ${washStatus === 'After' ? 'bg-pink-800 text-white border-pink-800' : 'bg-white text-gray-400 border-gray-100'}`}
+                        className={`flex-1 py-4 rounded-[1.25rem] text-[13px] font-bold border transition-all shadow-sm ${washStatus === 'After' ? 'bg-pink-600 text-white border-pink-600' : 'bg-white text-pink-300 border-pink-50'}`}
                       >🚿 洗臉後</button>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm space-y-4">
-                   <h3 className="font-bold text-gray-800 text-sm flex items-center gap-2">
-                     <span className="w-1 h-4 bg-pink-400 rounded-full"></span>第二步：目前狀態
+                <div className="bg-white rounded-[2.5rem] p-8 border border-pink-50 shadow-sm space-y-6">
+                   <h3 className="font-bold text-pink-400 text-sm flex items-center gap-3">
+                     <span className="w-1.5 h-5 bg-pink-100 rounded-full"></span>個人身體狀態
                    </h3>
-                   <div className="grid grid-cols-2 gap-3">
+                   <div className="grid grid-cols-2 gap-4">
                      <button 
                         onClick={() => setUserFactors(p => ({...p, isPeriod: !p.isPeriod}))}
-                        className={`py-3 rounded-2xl text-xs font-bold border transition-all ${userFactors.isPeriod ? 'bg-pink-100 border-pink-300 text-pink-700' : 'bg-gray-50 border-gray-100 text-gray-400'}`}
-                     >🩸 生理期中</button>
+                        className={`py-4 rounded-[1.25rem] text-xs font-bold border transition-all ${userFactors.isPeriod ? 'bg-pink-50 border-pink-100 text-pink-500' : 'bg-gray-50 border-gray-100 text-gray-400'}`}
+                     >🌸 生理期中</button>
                      <input 
-                        placeholder="近期服藥狀況"
+                        placeholder="近期特殊用藥"
                         value={userFactors.onMedication}
                         onChange={(e) => setUserFactors(p => ({...p, onMedication: e.target.value}))}
-                        className="py-3 px-4 rounded-2xl text-xs bg-gray-50 border border-gray-100 outline-none focus:border-pink-300 shadow-sm"
+                        className="py-4 px-6 rounded-[1.25rem] text-xs font-bold bg-gray-50 border border-gray-100 outline-none focus:border-pink-200 focus:bg-white transition-all placeholder:text-gray-300 shadow-inner"
                      />
                    </div>
                    <button 
                     disabled={(!skinPhotos.left && !skinPhotos.right) || loading}
                     onClick={runAnalysis}
-                    className="w-full py-4 bg-pink-500 text-white rounded-2xl font-bold shadow-lg shadow-pink-100 disabled:bg-gray-200 transition-all mt-4 active:scale-95"
+                    className="w-full py-5 bg-pink-400 text-white rounded-[1.5rem] font-bold shadow-sakura disabled:bg-gray-200 transition-all mt-4 hover:bg-pink-500 active:scale-[0.98] text-base tracking-widest"
                   >
-                    {loading ? 'AI 正在精準分析...' : '開始 AI 診斷分析'}
+                    {loading ? 'AI 粉圓智慧分析中...' : '開始 AI 膚況診斷'}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="animate-fade-in space-y-6">
-                <section className="bg-white rounded-3xl p-6 shadow-md border border-pink-50">
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-bold text-gray-800">AI 分析報告</h3>
-                    <button onClick={() => setAnalysisResult(null)} className="text-[10px] font-bold text-pink-500 uppercase px-3 py-1 bg-pink-50 rounded-full">重新分析</button>
+              <div className="animate-fade-in space-y-8">
+                <section className="bg-white rounded-[2.5rem] p-8 shadow-md border border-pink-50">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-bold text-pink-500">AI 診斷分析結果</h3>
+                    <button onClick={() => setAnalysisResult(null)} className="text-[11px] font-bold text-pink-400 uppercase px-4 py-2 bg-pink-50/50 rounded-full hover:bg-pink-50 transition-colors">重新分析</button>
                   </div>
-                  <div className="space-y-4">
-                    <p className="text-sm font-bold text-pink-700 leading-relaxed">{analysisResult.summary}</p>
-                    <div className="bg-pink-50 p-4 rounded-2xl border-l-4 border-pink-400 shadow-inner">
-                      <p className="text-sm italic text-gray-700 leading-relaxed">"{analysisResult.diagnosis}"</p>
+                  <div className="space-y-6">
+                    <p className="text-sm font-bold text-gray-600 leading-relaxed">{analysisResult.summary}</p>
+                    <div className="bg-[#fffafa] p-6 rounded-[2rem] border-l-4 border-pink-200 shadow-inner">
+                      <p className="text-sm italic text-pink-700 font-bold leading-relaxed">「{analysisResult.diagnosis}」</p>
                     </div>
                   </div>
                 </section>
-                <section className="space-y-3">
-                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest px-1">推薦保養方案</h3>
+                <section className="space-y-4">
+                  <h3 className="text-[11px] font-bold text-pink-200 uppercase tracking-[0.3em] px-3">櫻花粉圓推薦保養流程</h3>
                   {analysisResult.routine.map((step) => (
-                    <div key={step.step} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex gap-4 hover:border-pink-200 transition-all">
-                      <div className="w-10 h-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center font-black flex-shrink-0 border border-pink-100">{step.step}</div>
+                    <div key={step.step} className="bg-white rounded-[2rem] p-6 shadow-sm border border-pink-50 flex gap-5 hover:border-pink-200 transition-all group">
+                      <div className="w-14 h-14 rounded-2xl bg-pink-50 text-pink-400 flex items-center justify-center font-bold flex-shrink-0 border border-pink-100 text-xl group-hover:bg-pink-400 group-hover:text-white transition-all">{step.step}</div>
                       <div className="flex-1">
-                        <p className="text-[10px] uppercase font-bold text-pink-300 tracking-widest">{step.label}</p>
-                        <p className="font-bold text-gray-800 leading-tight">{step.product}</p>
-                        <p className="text-xs text-gray-500 mt-1 leading-relaxed">{step.reason}</p>
+                        <p className="text-[10px] uppercase font-bold text-pink-200 tracking-[0.2em] mb-1">{step.label}</p>
+                        <p className="font-bold text-gray-800 text-base leading-tight mb-1">{step.product}</p>
+                        <p className="text-xs text-gray-500 font-bold leading-relaxed">{step.reason}</p>
                       </div>
                     </div>
                   ))}
@@ -314,143 +318,138 @@ const App: React.FC = () => {
         )}
 
         {mode === AppMode.INVENTORY && (
-          <div className="space-y-6">
+          <div className="space-y-7">
             <button 
               onClick={() => {
                 const id = Math.random().toString(36).substr(2, 9);
-                setInventory(prev => [{ id, name: "新增產品", category: ProductCategory.SERUM, brand: "待辨識" }, ...prev]);
+                setInventory(prev => [{ id, name: "櫻花新品", category: ProductCategory.SERUM, brand: "辨識中" }, ...prev]);
                 setExpandedItemId(id);
               }}
-              className="w-full py-4 bg-white border-2 border-pink-200 rounded-2xl text-sm font-bold text-pink-600 shadow-sm hover:bg-pink-50 transition-all"
-            >➕ 新增庫存產品</button>
+              className="w-full py-5 bg-white border-2 border-pink-100 rounded-[1.5rem] text-sm font-bold text-pink-400 shadow-sakura hover:bg-pink-50 transition-all active:scale-[0.98]"
+            >🌸 點擊入庫新保養品</button>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               {Object.values(ProductCategory).map((cat) => {
                 const items = inventory.filter(i => i.category === cat);
                 if (items.length === 0) return null;
                 return (
-                  <div key={cat} className="space-y-2">
-                    <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">{cat}</h4>
+                  <div key={cat} className="space-y-3">
+                    <h4 className="text-[11px] font-bold text-pink-200 uppercase tracking-[0.4em] px-3">{cat}</h4>
                     {items.map(item => {
                       const isExpanded = expandedItemId === item.id;
                       return (
-                        <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                          {/* Item Header with Small Preview */}
+                        <div key={item.id} className="bg-white rounded-[2.25rem] border border-pink-50 shadow-sm overflow-hidden hover:shadow-md transition-all">
                           <div 
                             onClick={() => setExpandedItemId(isExpanded ? null : item.id)} 
-                            className="p-4 flex justify-between items-center cursor-pointer active:bg-pink-50"
+                            className="p-6 flex justify-between items-center cursor-pointer active:bg-pink-50 transition-colors"
                           >
-                            <div className="flex items-center gap-4 flex-1">
-                              {/* Preview Thumbnail */}
+                            <div className="flex items-center gap-5 flex-1">
                               {item.frontImage && !isExpanded && (
-                                <img src={item.frontImage} className="w-12 h-12 rounded-xl object-cover border border-pink-50 shadow-sm animate-fade-in" alt="preview" />
+                                <img src={item.frontImage} className="w-14 h-14 rounded-2xl object-cover border border-pink-50 shadow-sm animate-fade-in" alt="preview" />
                               )}
                               <div className="flex-1">
-                                <p className="font-bold text-gray-800 text-sm leading-tight">{item.name}</p>
-                                <p className="text-[10px] text-gray-400 font-medium">{item.brand}</p>
+                                <p className="font-bold text-gray-800 text-[15px] leading-tight mb-0.5">{item.name}</p>
+                                <p className="text-[10px] text-pink-300 font-bold tracking-widest uppercase">{item.brand}</p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-4">
                               {item.category === ProductCategory.MASK && (
-                                <div className="flex items-center gap-2 bg-pink-50 px-2 py-1 rounded-lg" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex items-center gap-2 bg-pink-50/70 px-4 py-2 rounded-full" onClick={(e) => e.stopPropagation()}>
                                   <input 
                                     type="number" 
                                     value={item.stockCount ?? 0} 
                                     onChange={(e) => updateStock(item.id, parseInt(e.target.value) || 0)} 
-                                    className="w-8 bg-transparent text-xs font-bold text-pink-600 outline-none text-center" 
+                                    className="w-8 bg-transparent text-xs font-bold text-pink-500 outline-none text-center" 
                                   />
                                 </div>
                               )}
-                              <span className={`text-gray-300 transition-transform ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
+                              <span className={`text-pink-100 text-sm transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
                             </div>
                           </div>
 
                           {isExpanded && (
-                            <div className="px-4 pb-4 pt-2 bg-gray-50/50 border-t border-gray-100 space-y-4 animate-fade-in">
-                              <div className="grid grid-cols-2 gap-3">
-                                {/* Front Image Slot */}
-                                <label className="aspect-square bg-white border border-pink-100 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden group shadow-sm">
+                            <div className="px-6 pb-8 pt-3 bg-[#fffdfd] border-t border-pink-50 space-y-6 animate-fade-in">
+                              <div className="grid grid-cols-2 gap-5">
+                                <label className="aspect-square bg-white border border-pink-100 rounded-[2rem] flex flex-col items-center justify-center cursor-pointer relative overflow-hidden shadow-inner hover:border-pink-200 transition-all group">
                                   {item.frontImage ? (
                                     <img src={item.frontImage} className="w-full h-full object-cover" />
                                   ) : (
-                                    <span className="text-[10px] font-bold text-pink-300 text-center px-2">📸 點擊上傳<br/>正面照辨識</span>
+                                    <div className="text-center p-5">
+                                      <span className="text-3xl opacity-40 block mb-2 group-hover:scale-110 transition-transform">📸</span>
+                                      <span className="text-[10px] font-bold text-pink-200 uppercase tracking-widest">正面圖辨識</span>
+                                    </div>
                                   )}
-                                  <input 
-                                    type="file" 
-                                    accept="image/*"
-                                    className="hidden" 
-                                    onChange={(e) => handleFileUpload(e, 'frontProduct', item.id)} 
-                                  />
+                                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'frontProduct', item.id)} />
                                 </label>
-                                {/* Back Image Slot */}
-                                <label className={`aspect-square bg-white border border-pink-100 rounded-xl flex flex-col items-center justify-center cursor-pointer relative overflow-hidden shadow-sm ${item.category === ProductCategory.DEVICE ? 'opacity-30 cursor-not-allowed pointer-events-none' : ''}`}>
+                                <label className={`aspect-square bg-white border border-pink-100 rounded-[2rem] flex flex-col items-center justify-center cursor-pointer relative overflow-hidden shadow-inner hover:border-pink-200 transition-all group ${item.category === ProductCategory.DEVICE ? 'opacity-20 pointer-events-none' : ''}`}>
                                   {item.backImage ? (
                                     <img src={item.backImage} className="w-full h-full object-cover" />
                                   ) : (
-                                    <span className="text-[10px] font-bold text-pink-300 text-center px-2">
-                                      {item.category === ProductCategory.DEVICE ? '儀器不需成分' : '📸 點擊上傳\n背面成分分析'}
-                                    </span>
+                                    <div className="text-center p-5">
+                                      <span className="text-3xl opacity-40 block mb-2 group-hover:scale-110 transition-transform">🔍</span>
+                                      <span className="text-[10px] font-bold text-pink-200 uppercase tracking-widest">成分全析</span>
+                                    </div>
                                   )}
                                   <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'backProduct', item.id)} />
                                 </label>
                               </div>
                               
                               {item.category !== ProductCategory.DEVICE && (
-                                <div className="text-center bg-white p-4 rounded-2xl border border-pink-50 shadow-inner">
+                                <div className="text-center bg-white p-6 rounded-[2rem] border border-pink-50 shadow-sm">
                                   <button 
                                     onClick={() => setShowManualInput(showManualInput === item.id ? null : item.id)}
-                                    className="text-[11px] font-black text-pink-500 flex items-center justify-center gap-2 mx-auto"
+                                    className="text-[11px] font-bold text-pink-400 flex items-center justify-center gap-2 mx-auto hover:text-pink-600 transition-colors"
                                   >
-                                    <span className="text-base">📝</span>
-                                    <span className="underline decoration-pink-200 underline-offset-4">成分表不清楚？手動輸入成分表</span>
+                                    <span className="text-xl">✍️</span>
+                                    <span className="underline decoration-pink-100 underline-offset-8">手動輸入成分表 (jf 粉圓體)</span>
                                   </button>
                                   
                                   {showManualInput === item.id && (
-                                    <div className="mt-4 space-y-3 animate-fade-in">
+                                    <div className="mt-6 space-y-4 animate-fade-in">
                                       <textarea 
-                                        className="w-full p-4 rounded-2xl border border-pink-100 text-xs outline-none focus:border-pink-400 bg-white shadow-sm placeholder:text-gray-300 resize-none transition-all" 
+                                        className="w-full p-6 rounded-[1.75rem] border border-pink-50 text-xs font-bold outline-none focus:border-pink-300 bg-[#fffdfd] shadow-inner placeholder:text-pink-100 resize-none transition-all" 
                                         rows={4} 
-                                        placeholder="貼上成分表文字內容..."
+                                        placeholder="在此貼上您手打或複製的成分表清單..."
                                         value={item.manualIngredients || ""}
                                         onChange={(e) => setInventory(prev => prev.map(i => i.id === item.id ? { ...i, manualIngredients: e.target.value } : i))}
                                       />
                                       <button 
                                         disabled={!item.manualIngredients?.trim() || loading}
                                         onClick={() => runIngredientCheck(null, item.manualIngredients || "", item.id, true)}
-                                        className="w-full py-3 bg-pink-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-pink-100 disabled:bg-gray-200"
-                                      >分析並記憶</button>
+                                        className="w-full py-4 bg-pink-400 text-white rounded-2xl text-[13px] font-bold shadow-sakura disabled:bg-gray-100 active:scale-[0.98] transition-all"
+                                      >AI 解析並保存至櫻花庫存</button>
                                     </div>
                                   )}
                                 </div>
                               )}
 
                               {(item.ingredients || item.effects) && (
-                                <div className="bg-white p-4 rounded-xl border border-pink-100 shadow-sm space-y-3 animate-fade-in">
+                                <div className="bg-white p-7 rounded-[2rem] border border-pink-50 shadow-sm space-y-5 animate-fade-in">
                                   <div>
-                                    <p className="text-[10px] font-bold text-green-600 uppercase">✨ 安心成分與功效</p>
-                                    <p className="text-xs font-bold text-gray-800 mt-1">{item.effects}</p>
-                                    <div className="flex flex-wrap gap-1 mt-2">
-                                      {item.ingredients?.map(ing => <span key={ing} className="bg-green-50 text-green-700 px-2 py-0.5 rounded text-[9px] font-medium border border-green-100">{ing}</span>)}
+                                    <p className="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-2">✨ 櫻花肌推薦成分</p>
+                                    <p className="text-xs font-bold text-gray-700 mb-4 leading-relaxed">{item.effects}</p>
+                                    <div className="flex flex-wrap gap-2">
+                                      {item.ingredients?.map(ing => <span key={ing} className="bg-green-50/70 text-green-600 px-4 py-1.5 rounded-full text-[10px] font-bold border border-green-100">{ing}</span>)}
                                     </div>
                                   </div>
                                   {item.cons && item.cons.length > 0 && (
                                     <div>
-                                      <p className="text-[10px] font-bold text-red-400 uppercase">⚠️ 致敏風險</p>
-                                      <div className="flex flex-wrap gap-1 mt-1">
-                                        {item.cons.map(c => <span key={c} className="bg-red-50 text-red-600 px-2 py-0.5 rounded text-[9px] font-medium border border-red-100">{c}</span>)}
+                                      <p className="text-[10px] font-bold text-pink-400 uppercase tracking-widest mb-2">⚠️ 刺激風險警示</p>
+                                      <div className="flex flex-wrap gap-2">
+                                        {item.cons.map(c => <span key={c} className="bg-pink-50 text-pink-400 px-4 py-1.5 rounded-full text-[10px] font-bold border border-pink-100">{c}</span>)}
                                       </div>
                                     </div>
                                   )}
-                                  <div className="pt-2 border-t border-gray-100">
-                                    <p className="text-[10px] font-bold text-pink-400 uppercase">⏰ 使用建議</p>
-                                    <p className="text-xs text-gray-600 mt-1 leading-relaxed">{item.usageTiming}</p>
+                                  <div className="pt-4 border-t border-pink-50">
+                                    <p className="text-[10px] font-bold text-pink-200 uppercase tracking-widest mb-2">建議使用時機</p>
+                                    <p className="text-xs text-gray-500 font-bold leading-relaxed">{item.usageTiming}</p>
                                   </div>
                                 </div>
                               )}
                               
-                              <div className="flex justify-between items-center pt-2">
-                                <span className="text-[10px] text-gray-300 uppercase tracking-tighter">ID: {item.id}</span>
-                                <button onClick={() => setInventory(prev => prev.filter(i => i.id !== item.id))} className="text-[10px] font-bold text-red-300 hover:text-red-500 px-2 py-1 transition-colors">🗑️ 移除產品</button>
+                              <div className="flex justify-between items-center pt-3">
+                                <span className="text-[9px] text-pink-100 font-bold tracking-[0.2em]">REF: {item.id}</span>
+                                <button onClick={() => setInventory(prev => prev.filter(i => i.id !== item.id))} className="text-[11px] font-bold text-pink-200 hover:text-pink-500 transition-colors flex items-center gap-1">🗑️ 移除品項</button>
                               </div>
                             </div>
                           )}
@@ -461,11 +460,11 @@ const App: React.FC = () => {
                 );
               })}
               {inventory.length > 0 && (
-                <div className="pt-8 text-center">
+                <div className="pt-12 text-center">
                    <button 
-                    onClick={() => { if(confirm('確定要清空數據嗎？')) setInventory(INITIAL_INVENTORY); }}
-                    className="text-[10px] font-bold text-gray-300 underline decoration-gray-100"
-                   >清空歷史數據</button>
+                    onClick={() => { if(confirm('確定要清除所有櫻花記憶嗎？')) setInventory(INITIAL_INVENTORY); }}
+                    className="text-[10px] font-bold text-pink-100 underline decoration-pink-50 underline-offset-8 hover:text-pink-300 transition-colors"
+                   >清空歷史數據記憶</button>
                 </div>
               )}
             </div>
@@ -473,41 +472,43 @@ const App: React.FC = () => {
         )}
 
         {mode === AppMode.CHECKER && (
-          <div className="space-y-6">
-            <div className="bg-pink-50/50 rounded-3xl p-8 text-center border-2 border-pink-100 shadow-inner">
-              <span className="text-4xl mb-4 block">🛡️</span>
-              <h2 className="text-xl font-bold text-pink-800 mb-2">採購掃雷分析</h2>
-              <p className="text-sm text-pink-600/70 mb-6 italic px-4">拍下成分表照片，AI 將判斷是否適合極乾敏感肌使用。</p>
-              <label className="w-full py-4 bg-pink-500 text-white rounded-2xl font-bold shadow-xl flex items-center justify-center gap-3 cursor-pointer active:scale-95 transition-all">
-                📸 上傳照片開始掃雷
+          <div className="space-y-7">
+            <div className="bg-[#fffcfd] rounded-[2.5rem] p-12 text-center border-2 border-dashed border-pink-100 shadow-inner">
+              <div className="w-24 h-24 bg-pink-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-sm">
+                <span className="text-5xl">🛡️</span>
+              </div>
+              <h2 className="text-2xl font-bold text-pink-500 mb-4 tracking-tight">櫻花採購掃雷</h2>
+              <p className="text-sm text-pink-300 font-bold mb-10 italic px-8 leading-relaxed">在您購買新產品前，讓 AI 為乾燥敏感肌把關每一項成分。</p>
+              <label className="w-full py-5 bg-pink-400 text-white rounded-[1.5rem] font-bold shadow-sakura flex items-center justify-center gap-4 cursor-pointer hover:bg-pink-500 active:scale-95 transition-all text-base tracking-widest">
+                📸 拍攝成分表開始掃雷
                 <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, 'checker')} />
               </label>
             </div>
 
             {checkerResult && (
-              <div className={`bg-white rounded-3xl p-6 border-4 shadow-2xl animate-fade-in ${checkerResult.recommendation === 'PASS' ? 'border-green-400' : 'border-red-400'}`}>
-                <h3 className="text-xl font-black text-gray-800 mb-4">{checkerResult.productName}</h3>
-                <div className="space-y-4">
-                   <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-green-50 p-4 rounded-2xl">
-                        <p className="text-[10px] font-bold text-green-600 mb-2">✅ 安心成分</p>
-                        <div className="flex flex-wrap gap-1">
-                          {checkerResult.pros.map((p, i) => <span key={i} className="text-[10px] bg-white px-2 py-0.5 rounded shadow-sm font-medium">{p}</span>)}
+              <div className={`bg-white rounded-[2.5rem] p-9 border-4 shadow-2xl animate-fade-in ${checkerResult.recommendation === 'PASS' ? 'border-green-300 shadow-green-50' : 'border-pink-300 shadow-pink-50'}`}>
+                <h3 className="text-2xl font-bold text-gray-800 mb-7 leading-tight">{checkerResult.productName}</h3>
+                <div className="space-y-7">
+                   <div className="grid grid-cols-2 gap-6">
+                      <div className="bg-green-50/60 p-6 rounded-[2rem]">
+                        <p className="text-[10px] font-bold text-green-600 mb-4 tracking-widest uppercase">✨ 極佳優點</p>
+                        <div className="flex flex-wrap gap-2">
+                          {checkerResult.pros.map((p, i) => <span key={i} className="text-[10px] bg-white px-3 py-1.5 rounded-full shadow-sm font-bold border border-green-100 text-green-700">{p}</span>)}
                         </div>
                       </div>
-                      <div className="bg-red-50 p-4 rounded-2xl">
-                        <p className="text-[10px] font-bold text-red-600 mb-2">⚠️ 風險成分</p>
-                        <div className="flex flex-wrap gap-1">
-                          {checkerResult.cons.map((p, i) => <span key={i} className="text-[10px] bg-white px-2 py-0.5 rounded shadow-sm font-medium">{p}</span>)}
+                      <div className="bg-pink-50/60 p-6 rounded-[2rem]">
+                        <p className="text-[10px] font-bold text-pink-400 mb-4 tracking-widest uppercase">⚠️ 致敏風險</p>
+                        <div className="flex flex-wrap gap-2">
+                          {checkerResult.cons.map((p, i) => <span key={i} className="text-[10px] bg-white px-3 py-1.5 rounded-full shadow-sm font-bold border border-pink-100 text-pink-700">{p}</span>)}
                         </div>
                       </div>
                    </div>
-                   <div className="bg-gray-50 p-4 rounded-2xl space-y-2 text-sm text-gray-700 shadow-inner">
-                      <p><strong>功效：</strong>{checkerResult.effects}</p>
-                      <p><strong>建議：</strong>{checkerResult.timing}</p>
+                   <div className="bg-gray-50/80 p-7 rounded-[2rem] space-y-4 text-sm font-bold text-gray-600 shadow-inner">
+                      <p><strong className="text-pink-400">主要功效：</strong>{checkerResult.effects}</p>
+                      <p><strong className="text-pink-400">專家建議：</strong>{checkerResult.timing}</p>
                    </div>
-                   <div className={`py-4 rounded-2xl text-center font-black tracking-widest shadow-md transition-colors ${checkerResult.recommendation === 'PASS' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
-                    {checkerResult.recommendation === 'PASS' ? '✨ 極力推薦購買' : '⚠️ 不推薦使用'}
+                   <div className={`py-6 rounded-[1.5rem] text-center font-bold tracking-[0.25em] shadow-lg transition-all text-base ${checkerResult.recommendation === 'PASS' ? 'bg-green-400 text-white' : 'bg-pink-400 text-white'}`}>
+                    {checkerResult.recommendation === 'PASS' ? '✨ 極力推薦購買' : '❌ 建議避雷 (不推薦)'}
                   </div>
                 </div>
               </div>
@@ -516,19 +517,23 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 max-w-2xl mx-auto bg-white/95 backdrop-blur-lg border-t border-gray-100 h-22 flex items-center justify-around px-8 pb-4 z-40 shadow-lg">
-        {[{mode: AppMode.ANALYSIS, icon: '🏡', label: '膚況'}, {mode: AppMode.INVENTORY, icon: '🍱', label: '清單'}, {mode: AppMode.CHECKER, icon: '🛡️', label: '掃雷'}].map(t => (
-          <button key={t.mode} onClick={() => setMode(t.mode)} className={`flex flex-col items-center gap-1.5 transition-all ${mode === t.mode ? 'text-pink-500 scale-110 font-bold' : 'text-gray-300'}`}>
-            <span className="text-2xl">{t.icon}</span>
-            <span className="text-[10px] uppercase font-black tracking-tighter">{t.label}</span>
+      <nav className="fixed bottom-0 left-0 right-0 max-w-2xl mx-auto bg-white/95 backdrop-blur-2xl border-t border-pink-50 h-28 flex items-center justify-around px-8 pb-6 z-40 shadow-[0_-15px_40px_-15px_rgba(249,168,212,0.3)]">
+        {[{mode: AppMode.ANALYSIS, icon: '🌸', label: '膚況'}, {mode: AppMode.INVENTORY, icon: '🍱', label: '庫存'}, {mode: AppMode.CHECKER, icon: '🛡️', label: '掃雷'}].map(t => (
+          <button key={t.mode} onClick={() => setMode(t.mode)} className={`flex flex-col items-center gap-2.5 transition-all duration-500 ${mode === t.mode ? 'text-pink-500 scale-110 font-bold' : 'text-pink-200 opacity-60'}`}>
+            <span className="text-3xl">{t.icon}</span>
+            <span className="text-[10px] uppercase font-bold tracking-[0.3em]">{t.label}</span>
           </button>
         ))}
       </nav>
 
       {loading && (
-        <div className="fixed inset-0 z-[60] bg-white/70 backdrop-blur-md flex flex-col items-center justify-center">
-          <div className="w-16 h-16 border-4 border-pink-100 border-t-pink-500 rounded-full animate-spin mb-6 shadow-xl shadow-pink-100"></div>
-          <p className="text-pink-800 font-black animate-pulse text-lg tracking-widest text-center px-6">AI 精準分析記憶中...</p>
+        <div className="fixed inset-0 z-[60] bg-white/85 backdrop-blur-lg flex flex-col items-center justify-center">
+          <div className="relative w-32 h-32 flex items-center justify-center mb-10">
+            <div className="absolute inset-0 border-[6px] border-pink-50 border-t-pink-400 rounded-full animate-spin"></div>
+            <span className="text-5xl animate-bounce">🌸</span>
+          </div>
+          <p className="text-pink-500 font-bold animate-pulse text-xl tracking-[0.15em] text-center px-12 leading-relaxed">AI 櫻花粉圓智慧分析中...</p>
+          <p className="text-pink-300 text-[10px] mt-4 font-bold tracking-[0.4em] uppercase">Processing Skincare Wisdom</p>
         </div>
       )}
     </div>
