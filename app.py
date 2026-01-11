@@ -160,8 +160,8 @@ with tab1:
     custom_note = st.text_input("📝 補充 (如：熬夜、擠粉刺)")
 
     c1, c2 = st.columns(2)
-    left_file = c1.file_uploader("📸 左臉 (紅印)", type=["jpg", "png"])
-    right_file = c2.file_uploader("📸 右臉 (疤痕)", type=["jpg", "png"])
+    left_file = c1.file_uploader("📸 左臉頰", type=["jpg", "png"])
+    right_file = c2.file_uploader("📸 右臉頰", type=["jpg", "png"])
 
     if st.button("✨ 生成保養流程"):
         if left_file and right_file:
